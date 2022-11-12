@@ -3,8 +3,7 @@
 class LED
 {
 private:
-    const struct device *dev;
-    gpio_pin_t pin;
+    struct gpio_dt_spec led; 
 	bool led_is_on = true;
 public:
     LED();
