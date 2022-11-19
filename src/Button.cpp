@@ -36,9 +36,14 @@ void Button::button_callback(const device *dev, gpio_callback *cb, uint32_t pins
         pressed = gpio_pin_get_dt(&button);
         irq_unlock(key);
         
-        if(pressed)
-            printk("pressed\n");
-        else
-            printk("released\n");
+        for(auto e : external_cb_list)
+        {
+            e(pressed);
+        }
     }
+}
+
+void Button::AddCallback(std::function<void(bool)> &p_cb)
+{
+    external_cb_list.push_back(p_cb);
 }
