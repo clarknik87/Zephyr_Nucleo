@@ -5,10 +5,9 @@
 #include <Button.hpp>
 
 
-Button::Button()
+Button::Button(gpio_dt_spec dev) : button{dev}
 {
     //GPIO init
-    button = GPIO_DT_SPEC_GET_OR(DT_ALIAS(sw0), gpios, {0});
     gpio_pin_configure_dt(&button, GPIO_INPUT);
 
     //Interrupt init

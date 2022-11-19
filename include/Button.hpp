@@ -10,7 +10,8 @@ private:
 
     void button_callback(const device *dev, gpio_callback *cb, uint32_t pins);
 public:
-    Button();
+    Button()= delete;
+    Button(gpio_dt_spec dev);
 
     bool Pressed();
 };

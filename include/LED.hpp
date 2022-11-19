@@ -6,7 +6,8 @@ private:
     struct gpio_dt_spec led; 
 	bool led_is_on = true;
 public:
-    LED();
+    LED() = delete;
+    LED(gpio_dt_spec dev);
 
     void On();
     void Off();

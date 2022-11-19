@@ -4,9 +4,8 @@
 #include <LED.hpp>
 
 
-LED::LED()
+LED::LED(gpio_dt_spec dev) : led{dev}
 {
-    led = GPIO_DT_SPEC_GET_OR(DT_ALIAS(led0), gpios, {0});
     gpio_pin_configure_dt(&led, GPIO_OUTPUT);
 }
 
