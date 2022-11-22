@@ -22,6 +22,7 @@
 #include <Utils.hpp>
 #include <LED.hpp>
 #include <Button.hpp>
+#include <Gyro.hpp>
 
 
 /**
@@ -29,8 +30,11 @@
  */
 void main(void)
 {
+	printk("Build: %s %s\n", __DATE__, __TIME__);
+
 	LED l1(GPIO_GET_SPEC(led0));
 	Button b1(GPIO_GET_SPEC(sw0));
+	Gyro g1("I2C_1", 0x68);
 
 	std::function<void(bool)> b1_callback = [&l1](bool pressed){
 		if(pressed)
@@ -48,6 +52,12 @@ void main(void)
 	b1.AddCallback(b1_callback);
 
 	while (1) {
-		;
+		int16_t x{0};
+		int16_t y{0};
+		int16_t z{0};
+
+		g1.ReadAccelerometer(x, y, z);
+		printk("x: %i, y: %i, z: %i\n", x, y, z);
+		k_sleep(K_MSEC(1000));
 	}
 }
