@@ -45,26 +45,45 @@ Gyro::Gyro(const char* dev_name, uint8_t addr) : address{addr}
         printk("I2C config setting invalid %u", i2c_cfg);
         return;
     }
+
+    InitRegisters();
 }
 
 uint8_t Gyro::ReadRegister(uint8_t reg_addr)
 {
     uint8_t reg_val;
-    i2c_write(gyro, &reg_addr, 1, address );
-    i2c_read(gyro, &reg_val, 1, address);
+    i2c_write_read(gyro, address, &reg_addr, 1, &reg_val, 1);
     return reg_val;
+}
+
+void Gyro::ReadRegisters(uint8_t reg_addr, uint8_t *read_data, int num_reg)
+{
+    i2c_write_read(gyro, address, &reg_addr, 1, read_data, num_reg);
+}
+
+void Gyro::WriteRegister(uint8_t reg_addr, uint8_t reg_val)
+{
+    uint8_t write_buf[2] = {reg_addr, reg_val};
+    i2c_write(gyro, write_buf, 2, address);
+}
+
+void Gyro::InitRegisters()
+{
+    WriteRegister(0x6b, 0x00); //Power On
+    WriteRegister(0x1c, 0x08); //Accel 4G
+    WriteRegister(0x1a, 0x06); //Low pass filter bandwidth 5Hz
+    return;
 }
 
 void Gyro::ReadAccelerometer(int16_t &x, int16_t &y, int16_t &z)
 {
-    uint8_t write_address;
-    uint8_t hi_byte{0};
-    uint8_t lo_byte{0};
+    uint8_t raw_data[6];
 
-    //Reads the "WHO_AM_I byte that returns 0x68"
-    lo_byte = ReadRegister(0x75);
+    ReadRegisters(0x3b, raw_data, 6);
 
-    x = (hi_byte<<8) | lo_byte;
+    x = ((raw_data[0]<<8) | raw_data[1]);
+    y = ((raw_data[2]<<8) | raw_data[3]);
+    z = ((raw_data[4]<<8) | raw_data[5]);
 
     return;
 }

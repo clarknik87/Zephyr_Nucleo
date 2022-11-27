@@ -26,7 +26,11 @@ private:
     uint32_t        i2c_cfg;
     uint8_t         address;
 
-    uint8_t ReadRegister(uint8_t reg_addr);
+    uint8_t         ReadRegister(uint8_t reg_addr);
+    void            ReadRegisters(uint8_t reg_addr, uint8_t *read_data, int num_reg);
+    void            WriteRegister(uint8_t reg_addr, uint8_t reg_val);
+    void            InitRegisters();
+
 public:
     Gyro() = delete;
     Gyro(const char* dev_name, uint8_t addr);
